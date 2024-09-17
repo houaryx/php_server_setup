@@ -5,7 +5,7 @@ This repository provides a Docker setup to quickly deploy a web server environme
 ## Prerequisites
 - Unix Env or WSL for Windows
   ```
-  git clone https://github.com/houaryx/devops/wsl_ubuntu.ps1
+  git clone https://github.com/houaryx/devops
   ```
 - Docker installed on your machine
 - Docker Compose (optional, but recommended for managing multi-container applications)
