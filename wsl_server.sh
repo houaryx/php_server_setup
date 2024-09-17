@@ -145,8 +145,13 @@ EOF
 install_package "nodejs"
 install_package "npm"
 
-# Install Composer
-install_package "composer"
+# Install Laravel CLI globally
+status_message "Installing Laravel CLI"
+sudo composer global require laravel/installer
+
+# Ensure the global Composer bin directory is in PATH
+echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 
 # Install Git
 install_package "git"
@@ -157,18 +162,8 @@ sudo cd /var/www/html
 sudo rm /var/www/html/index.php
 sudo rm /var/www/html/index.html
 sudo wget https://raw.githubusercontent.com/houaryx/php_server_setup/main/ui/index.php 
-sudo wget https://raw.githubusercontent.com/houaryx/php_server_setup/main/ui/css/ui.php
+
  
-
-
-# Install Laravel CLI globally
-status_message "Installing Laravel CLI"
-sudo composer global require laravel/installer
-
-# Ensure the global Composer bin directory is in PATH
-echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-
 clear
 # Final status message
 status_message '''
