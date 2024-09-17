@@ -2,9 +2,11 @@
 
 # Function to display status messages
 function status_message() {
-    echo "############################################"
-    echo "# $1"
-    echo "############################################"
+    clear
+    echo "======================================="
+    echo "+ $1"
+    echo "======================================="
+    echo
 }
 
 # Function to prompt for MySQL username and password
@@ -153,8 +155,8 @@ $dirs = array_filter(glob($webRoot . '/*'), 'is_dir');
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mb-4">Website Dashboard</h1>
-
+        <h1 class="text-center mb-4">Server Dashboard</h1>
+        <h2 class="text-center mb-4">PHP 8.3 + Apach + mysql + Nodejs@lts + composer + Laravel-cli</h1>
         <!-- Success/Error Messages -->
         <?php if (isset($successMsg)): ?>
             <div class="alert alert-success"><?= $successMsg ?></div>
