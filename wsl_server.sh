@@ -156,11 +156,10 @@ status_message "Cloning repository"
 sudo cd /var/www/html
 sudo rm /var/www/html/index.php
 sudo rm /var/www/html/index.html
-sudo wget https://github.com/houaryx/php_server_setup/blob/main/ui/index.php
-sudo mkdir css
-sudo cd css
-sudo wget https://github.com/houaryx/php_server_setup/blob/main/ui/css/ui.php
-cd ~
+sudo wget https://raw.githubusercontent.com/houaryx/php_server_setup/main/ui/index.php 
+sudo wget https://raw.githubusercontent.com/houaryx/php_server_setup/main/ui/css/ui.php
+ 
+
 
 # Install Laravel CLI globally
 status_message "Installing Laravel CLI"
