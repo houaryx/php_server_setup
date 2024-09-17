@@ -1,5 +1,5 @@
 <?php
-$webRoot = __DIR__ . "/websites"; // Use __DIR__ for better path management
+$webRoot = __DIR__ ;
 
 // Handle directory creation
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["newDir"])) {
