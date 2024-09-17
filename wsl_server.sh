@@ -117,123 +117,6 @@ sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 # Create the dashboard PHP file
 status_message "Creating Dashboard in /var/www/html/index.php"
 
-cat << 'EOF' > /var/www/html/index.php
-<?php
-$webRoot = "/var/www/html";
-
-// Handle directory creation
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["newDir"])) {
-    $newDir = $_POST["newDir"];
-    $newDirPath = $webRoot . '/' . $newDir;
-
-    if (!is_dir($newDirPath)) {
-        mkdir($newDirPath, 0755); // Create directory
-        $successMsg = "Directory '$newDir' created successfully!";
-    } else {
-        $errorMsg = "Directory '$newDir' already exists!";
-    }
-}
-
-// Handle directory deletion
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["deleteDir"])) {
-    $dirToDelete = $_POST["deleteDir"];
-    $dirToDeletePath = $webRoot . '/' . $dirToDelete;
-
-    if (is_dir($dirToDeletePath)) {
-        rmdir($dirToDeletePath); // Remove directory
-        $successMsg = "Directory '$dirToDelete' deleted successfully!";
-    } else {
-        $errorMsg = "Directory '$dirToDelete' does not exist!";
-    }
-}
-
-// Get the list of directories
-$dirs = array_filter(glob($webRoot . '/*'), 'is_dir');
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 800px;
-        }
-        .directory-list {
-            margin-top: 20px;
-        }
-        footer {
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 class="text-center mb-4">Server Dashboard</h1>
-        <h2 class="text-center mb-4">PHP 8.3 + Apache + MySQL + Node.js@LTS + Composer + Laravel CLI</h2>
-        <!-- Success/Error Messages -->
-        <?php if (isset($successMsg)): ?>
-            <div class="alert alert-success"><?= $successMsg ?></div>
-        <?php endif; ?>
-        <?php if (isset($errorMsg)): ?>
-            <div class="alert alert-danger"><?= $errorMsg ?></div>
-        <?php endif; ?>
-
-        <!-- Form to create a new directory -->
-        <form action="" method="POST" class="mb-4">
-            <div class="input-group mb-3">
-                <input type="text" name="newDir" class="form-control" placeholder="Enter new directory name" required>
-                <button type="submit" class="btn btn-primary">Create Directory</button>
-            </div>
-        </form>
-
-        <!-- Form to delete a directory -->
-        <form action="" method="POST" class="mb-4">
-            <div class="input-group mb-3">
-                <input type="text" name="deleteDir" class="form-control" placeholder="Enter directory name to delete" required>
-                <button type="submit" class="btn btn-danger">Delete Directory</button>
-            </div>
-        </form>
-
-        <!-- Directory Listing -->
-        <h3>Available Websites</h3>
-        <ul class="list-group directory-list">
-            <?php if (empty($dirs)): ?>
-                <li class="list-group-item">No directories found.</li>
-            <?php else: ?>
-                <?php foreach ($dirs as $dir): ?>
-                    <li class="list-group-item">
-                        <a href="<?= basename($dir) ?>" target="_blank"><?= basename($dir) ?></a>
-                    </li>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </ul>
-
-        <!-- MySQL Credentials Display -->
-        <h2>MySQL Username</h2>
-        <p><?= htmlspecialchars($mysql_user) ?></p>
-        <h2>MySQL Password</h2>
-        <p><?= htmlspecialchars($mysql_password) ?></p>
-    </div>
-
-    <footer>
-        <p>Developed by Ahmed Khalid - <a href="https://github.com/houaryx" target="_blank">github.com/houaryx</a></p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-</body>
-</html>
-EOF
-
 # Ensure proper permissions for /var/www/html
 status_message "Setting proper permissions for /var/www/html"
 sudo chmod 775 /var/www/html
@@ -255,4 +138,24 @@ install_package "nodejs"
 install_package "npm"
 
 # Install Composer
-install_package
+install_package "composer"
+
+# Install Git
+install_package "git"
+
+# Clone the repository
+status_message "Cloning repository"
+sudo rm /var/www/html/index.php
+sudo git clone https://github.com/houaryx/php_server_setup/tree/main/ui/css /var/www/html/
+
+# Install Laravel CLI globally
+status_message "Installing Laravel CLI"
+sudo composer global require laravel/installer
+
+# Ensure the global Composer bin directory is in PATH
+echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# Final status message
+status_message "Setup complete. Your server is ready."
+
