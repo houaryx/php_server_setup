@@ -153,8 +153,14 @@ install_package "git"
 
 # Clone the repository
 status_message "Cloning repository"
+sudo cd /var/www/html
 sudo rm /var/www/html/index.php
-sudo git clone https://github.com/houaryx/php_server_setup/tree/main/ui/css /var/www/html/
+sudo rm /var/www/html/index.html
+sudo wget https://github.com/houaryx/php_server_setup/blob/main/ui/index.php
+sudo mkdir css
+sudo cd css
+sudo wget https://github.com/houaryx/php_server_setup/blob/main/ui/css/ui.php
+cd ~
 
 # Install Laravel CLI globally
 status_message "Installing Laravel CLI"
@@ -164,6 +170,15 @@ sudo composer global require laravel/installer
 echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 
+clear
 # Final status message
-status_message "Setup complete. Your server is ready."
-
+status_message '''
+---------------------------------------
+Setup complete. Your server is ready in host
+Your User Name For MySQL = $mysql_user
+Your User Password For MySQL = $mysql_password
+You Can test PHP by Dashboard http://localhost/ or http://localhost/index.php
+You Can test PHP by Visiting http://localhost/info.php
+You Can Access phpMyAdmin By Visiting http://localhost/phpmyadmin
+--------------------------------------
+'''
