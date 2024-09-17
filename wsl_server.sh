@@ -6,7 +6,7 @@ function status_message() {
     echo "======================================="
     echo "+ $1"
     echo "======================================="
-    echo
+    echo  "DEV : @houaryx"
 }
 
 # Function to prompt for MySQL username and password
@@ -15,6 +15,27 @@ function prompt_mysql_credentials() {
     mysql_user=${mysql_user:-root}
     read -sp "Enter MySQL password: " mysql_password
     echo
+}
+
+# Function to check if a package is installed
+function check_package_installed() {
+    dpkg -l | grep -q "$1"
+}
+
+# Function to install a package if not installed
+function install_package() {
+    if ! check_package_installed "$1"; then
+        status_message "Installing $1"
+        sudo apt install -y "$1"
+    else
+        read -p "$1 is already installed. Do you want to reinstall it? [y/N]: " choice
+        if [[ "$choice" == [Yy] ]]; then
+            status_message "Reinstalling $1"
+            sudo apt install --reinstall -y "$1"
+        else
+            echo "$1 will not be reinstalled."
+        fi
+    fi
 }
 
 # Ensure the script is run as root
@@ -36,15 +57,17 @@ sudo apt purge php8.3* nginx nginx-common nginx-full -y
 sudo apt autoremove -y
 
 # Install Apache2
-status_message "Installing Apache2"
-sudo apt install apache2 -y
+install_package "apache2"
 
 # Install PHP 8.3 for Apache2
 status_message "Installing PHP 8.3 for Apache2"
 sudo apt install software-properties-common ca-certificates lsb-release apt-transport-https -y
 sudo add-apt-repository ppa:ondrej/php -y
 sudo apt update
-sudo apt install php8.3 php8.3-fpm libapache2-mod-php8.3 php8.3-mysql -y
+install_package "php8.3"
+install_package "php8.3-fpm"
+install_package "libapache2-mod-php8.3"
+install_package "php8.3-mysql"
 
 # Enable PHP in Apache2
 status_message "Enabling PHP in Apache2"
@@ -55,7 +78,7 @@ sudo systemctl restart apache2
 status_message "Reinstalling MySQL Server"
 sudo apt purge mysql-server mysql-client mysql-common -y
 sudo apt autoremove -y
-sudo apt install mysql-server -y
+install_package "mysql-server"
 
 # Start MySQL service
 status_message "Starting MySQL service"
@@ -85,8 +108,7 @@ print("MySQL credentials configured.")
 EOF
 
 # Install phpMyAdmin
-status_message "Installing phpMyAdmin"
-sudo apt install phpmyadmin -y
+install_package "phpmyadmin"
 
 # Ensure Apache is serving phpMyAdmin
 status_message "Configuring Apache for phpMyAdmin"
@@ -156,7 +178,7 @@ $dirs = array_filter(glob($webRoot . '/*'), 'is_dir');
 <body>
     <div class="container">
         <h1 class="text-center mb-4">Server Dashboard</h1>
-        <h2 class="text-center mb-4">PHP 8.3 + Apach + mysql + Nodejs@lts + composer + Laravel-cli</h1>
+        <h2 class="text-center mb-4">PHP 8.3 + Apache + MySQL + Node.js@LTS + Composer + Laravel CLI</h2>
         <!-- Success/Error Messages -->
         <?php if (isset($successMsg)): ?>
             <div class="alert alert-success"><?= $successMsg ?></div>
@@ -229,20 +251,8 @@ You Can Access phpMyAdmin By Visiting http://localhost/phpmyadmin
 EOF
 
 # Install Node.js (LTS) and npm
-status_message "Installing Node.js (LTS) and npm"
-curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-sudo apt install -y nodejs
+install_package "nodejs"
+install_package "npm"
 
 # Install Composer
-status_message "Installing Composer"
-curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
-
-# Add Composer to PATH in .bashrc or .zshrc
-status_message "Adding Composer to PATH"
-
-if [ -f "$HOME/.bashrc" ]; then
-    echo 'export PATH="$PATH:/usr/local/bin"' >> $HOME/.bashrc
-    source $HOME/.bashrc
-elif [ -f "$HOME/.zshrc" ]; then
-    echo 'export PATH="$PATH:/usr/local/bin"' >> $HOME/.zshrc
-    source $HOME
+install_package
