@@ -3,7 +3,10 @@
 This repository provides a Docker setup to quickly deploy a web server environment with Apache, PHP, MySQL, phpMyAdmin, Node.js, npm, Composer, and Laravel. It also includes a simple PHP dashboard for managing directories.
 
 ## Prerequisites
-
+- Unix Env or WSL for Windows
+  ```
+  git clone https://houaryx/devops/wsl_ubuntu.ps1
+  ```
 - Docker installed on your machine
 - Docker Compose (optional, but recommended for managing multi-container applications)
 
