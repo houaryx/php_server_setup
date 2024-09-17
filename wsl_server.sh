@@ -133,6 +133,14 @@ You Can test PHP by Visiting http://localhost/info.php
 You Can Access phpMyAdmin By Visiting http://localhost/phpmyadmin
 EOF
 
+cat << EOF > ~/README.md
+Your User Name For MySQL = $mysql_user
+Your User Password For MySQL = $mysql_password
+You Can test PHP by Dashboard http://localhost/ or http://localhost/index.php
+You Can test PHP by Visiting http://localhost/info.php
+You Can Access phpMyAdmin By Visiting http://localhost/phpmyadmin
+EOF
+
 # Install Node.js (LTS) and npm
 install_package "nodejs"
 install_package "npm"
